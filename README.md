@@ -1,13 +1,17 @@
 # Keypoint Labelling Tool
   
-**Run**
+## Run
 
     python main.py
 
 
-**Save Data**
-    [x, y, v] Keypoint labeling data
-    x, y is coordinate in image space / v is whether the keypoint is visible in image space
+## Save Data
+**Keypoint** : </br>
+[x, y, v] Keypoint labeling data</br>
+x, y is coordinate in image space / v is whether the keypoint is visible in image space</br>
+
+**Render_On_Off** : </br>
+Whether the foot is displayed in the image (Render_On: 1, Render_Off: 0)
 
     {
       "Keypoint": [
@@ -32,17 +36,17 @@
     }
 
 
-**Key Event**
+## Key Event
 
-    **[**: Index num down
-    **]**: Index num up
-    **Mouse Left**: Ceate Oval (Keypoint Visible)
-    **Mouse Right**: Ceate Oval (Keypoint nonVisible)
-    **Mouse Middle / Ctrl + z**: Undo Oval (Apply previous keypoint value)
+    [ : Index num down
+    ] : Index num up
+    Mouse Left : Ceate Oval (Keypoint Visible)
+    Mouse Right : Ceate Oval (Keypoint nonVisible)
+    Mouse Middle / Ctrl + z : Undo Oval (Apply previous keypoint value)
 
 
-**Button Event**
+## Button Event
 
-    **Save**: Save Label Data as Json
-    **Right / Left**: Corresponding foot for labeling
-    **Vis_On / Vis_Off**: Whether the foot is displayed in the image
+    Save : Save Label Data as Json
+    Right / Left : Corresponding foot for labeling
+    Vis_On / Vis_Off : Whether the foot is displayed in the image
