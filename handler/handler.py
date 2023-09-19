@@ -31,15 +31,19 @@ class handler(object):
 
         
         ## Mouse Event
+        # Keypoint Vis / Create Oval
         self.tk.canvas.bind("<Button-1>", self.Callback_Oval_Visiual) # L
-        self.tk.canvas.bind("<Button-2>", self.Callback_Undo) # M
+        # Undo Oval
+        self.tk.app.bind("<Button-2>", self.Callback_Undo) # M
+        self.tk.app.bind("<Control-z>", self.Callback_Undo) # M
+        # Keypoint nonVis / Create Oval
         self.tk.canvas.bind("<Button-3>", self.Callback_Oval_NonVisual) # R
 
         
         ## Button Event
-        self.tk.Create_Shoes_Vis_Toggle_Button(text="Vis_On", side="right", ipadx = 20, ipady = 30, command = self.shoes_vis_toggle)
-        self.tk.Create_Shoes_Toggle_Button(text="Right", side="right", ipadx = 20, ipady = 30, command = self.shoes_toggle)
-        self.tk.Create_Save_Button(text="Save", side="right", ipadx = 30, ipady = 30, command = self.save)
+        self.tk.Create_Shoes_Vis_Toggle_Button(text="Vis_On", command = self.shoes_vis_toggle)
+        self.tk.Create_Shoes_Toggle_Button(text="Right", command = self.shoes_toggle)
+        self.tk.Create_Save_Button(text="Save", command = self.save)
         
         ## Label Create
         self.tk.Set_Label(self.num_joints, self.init_value)
@@ -82,12 +86,12 @@ class handler(object):
         self.data.append(self.current_idx, self.data.value[self.current_idx])
 
         
-    def create_oval(self, x, y, v, i = None, shoes_state = None):
+    def create_oval(self, x, y, orig_x, orig_y, v, i = None, shoes_state = None):
         oval_scale = min(self.tk.img_width , self.tk.img_height)
-        oval_width = oval_scale / 90 # self.tk.total_width / 350
+        oval_width = oval_scale / 90
         
         self.data.circle[self.current_idx] = self.tk.canvas.create_oval( x-oval_width, y-oval_width, x+oval_width, y+oval_width, fill='white', outline = self.color )
-        self.data.value[self.current_idx] = [x, y, v]
+        self.data.value[self.current_idx] = [orig_x, orig_y, v]
 
         
     def num_down(self,):
@@ -111,7 +115,7 @@ class handler(object):
     def R_data_init(self):
         self.shoes_state = "Right"
         self.data = self.R_data
-        self.label = self.tk.R_label
+        self.keypoint_label = self.tk.R_keypoint_label
         self.vis_label = self.tk.R_vis_label
         self.color = 'red'
         self.override_data()
@@ -119,19 +123,19 @@ class handler(object):
     def L_data_init(self):
         self.shoes_state = "Left"
         self.data = self.L_data
-        self.label = self.tk.L_label
+        self.keypoint_label = self.tk.L_keypoint_label
         self.vis_label = self.tk.L_vis_label
         self.color = 'green'
         self.override_data()
 
     def override_data(self):
         for i in range(self.num_joints):
-            self.label[i]['text'] = str(self.data.value[i])
+            self.keypoint_label[i]['text'] = str(self.data.value[i])
             if self.data.value[i] == self.init_value or self.data.value[i][2] < self.vis_threshold:
-                self.label[i]['fg'] = "red"
+                self.keypoint_label[i]['fg'] = "red"
                 self.data.line_color[i] = "red"
             else:
-                self.label[i]['fg'] = "black"
+                self.keypoint_label[i]['fg'] = "black"
                 self.data.line_color[i] = "black"
                 
         self.vis_label['text'] = self.get_vis_state()

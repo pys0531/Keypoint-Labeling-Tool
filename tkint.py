@@ -1,30 +1,30 @@
 import tkinter as tk
 from PIL import ImageTk, Image
-
+import math
 
 class tkint():
     def __init__(self,):
         self.app = tk.Tk()
-        self.total_width= 800
-        self.total_height= 600
-        self.pos_x = self.total_width/2
-        self.pos_y = self.total_height/2
+        self.app.title('Keypoint Label Tool')
+        self.app_size = [1500, 400]
+        self.app.resizable(width=0, height=0) # Don't allow resizing in the x or y direction
+        self.app.geometry(f'{self.app_size[0]}x{self.app_size[1]}')
 
-        self.canvas=tk.Canvas(self.app, width = self.total_width, height = self.total_height) # width= self.width, height= self.height, 
-        self.canvas.pack(side='left', fill='both')
-        
-        self.button_frame = tk.Frame(self.app)
-        self.button_frame.pack(side='left', fill='both')
-        
-        self.frame = tk.Frame(self.app)
-        self.frame.pack(side='left', fill='both')
-                
-        self.label_frame = tk.Frame(self.frame)
-        self.label_frame.pack(side='top', fill='both')
+        self.square_canvas_size = 400
+        self.square_canvas_center = self.square_canvas_size/2
+        self.canvas=tk.Canvas(self.app, width = self.square_canvas_size, height = self.square_canvas_size)
+
+        self.button_size = [15, 7]
+        self.button_frame = tk.Frame(self.app, width = 400, height = 400)
+        self.button_frame.place(x = 450, y = 150)
+
+        self.str_size = [30, 1]
+        self.str_frame = tk.Frame(self.app)
+        self.str_frame.place(x = 800, y = 20)
             
-        self.Create_Foot_Side()
+        self.Create_Foot_Label()
         self.Create_Vis_Label()
-        self.Create_Label()
+        self.Create_Keypoint_Label()
 
         self.idx_name = ["Back_Bottom", "Index_Toe", "Back_Top", "Front_Outside", "Front_Inside", "Back_Outside", "Back_Inside", "Middle_Top",
                          "Ankle_Outside", "Ankle_Inside", "Big_Toe", "Middle_Toe", "Fourth_Toe", "Little_Toe"]
@@ -36,86 +36,74 @@ class tkint():
         
         self.Num_Text = None
 
+        
+    def Create_Foot_Label(self):
+        self.R_Foot_label = tk.Label(self.str_frame, text="Right", fg = "black", width = self.str_size[0], height = self.str_size[1], font=('Helvetica 9 bold'))
+        self.R_Foot_label.grid(row=0, column=1)
+        self.L_Foot_label = tk.Label(self.str_frame, text="Left", fg = "black", width = self.str_size[0], height = self.str_size[1], font=('Helvetica 9 bold'))
+        self.L_Foot_label.grid(row=0, column=2)
 
-    def Create_Shoes_Toggle_Button(self, text = "None", side = "right", ipadx = 20, padx = 0, ipady = 30, pady = 0, command = None):
-        self.shoes_toggle_button = tk.Button(self.button_frame, text=text, command = command, height = 1, width = 4)
-        self.shoes_toggle_button.pack(side=side, ipadx=ipadx, ipady=ipady, padx=padx, pady=pady)
-
-    def Create_Save_Button(self, text = "None", side = "right", ipadx = 20, padx = 0, ipady = 30, pady = 0, command = None):
-        self.save_button = tk.Button(self.button_frame, text=text, command = command, height = 1, width = 4)
-        self.save_button.pack(side=side, ipadx=ipadx, ipady=ipady, padx=padx, pady=pady)
-        
-    def Create_Shoes_Vis_Toggle_Button(self, text = "None", side = "right", ipadx = 20, padx = 0, ipady = 30, pady = 0, command = None):
-        self.shoes_vis_toggle_button = tk.Button(self.button_frame, text=text, command = command, height = 1, width = 4)
-        self.shoes_vis_toggle_button.pack(side=side, ipadx=ipadx, ipady=ipady, padx=padx, pady=pady)
-        
-    def Create_Foot_Side(self):
-        label = tk.Label(self.label_frame)
-        label.pack(side='top', fill='both')
-        
-        self.L_Foot_frame_text = tk.Frame(label)
-        self.L_Foot_frame_text.pack(side='right', fill='both')
-        self.L_Foot_label = tk.Label(self.L_Foot_frame_text, text="Left", fg = "black", width = 35, height = 1, font=('Helvetica 9 bold'))
-        self.L_Foot_label.pack()
-        
-        self.R_Foot_frame_text = tk.Frame(label)
-        self.R_Foot_frame_text.pack(side='right', fill='both')
-        self.R_Foot_label = tk.Label(self.R_Foot_frame_text, text="Right", fg = "black", width = 35, height = 1, font=('Helvetica 9 bold'))
-        self.R_Foot_label.pack()
 
     def Create_Vis_Label(self):        
-        label = tk.Label(self.label_frame)
-        label.pack(side='top', fill='both')
-        
-        self.L_vis_frame_text = tk.Frame(label)
-        self.L_vis_frame_text.pack(side='right', fill='both')
-        self.L_vis_label = tk.Label(self.L_vis_frame_text, text="None", fg = "black", width = 35, height = 1)
-        self.L_vis_label.pack()
-        
-        self.R_vis_frame_text = tk.Frame(label)
-        self.R_vis_frame_text.pack(side='right', fill='both')
-        self.R_vis_label = tk.Label(self.R_vis_frame_text, text="None", fg = "black", width = 35, height = 1)
-        self.R_vis_label.pack()
+        self.Vis_Name_label = tk.Label(self.str_frame, text="Render_Vis", fg = "black", width = self.str_size[0], height = self.str_size[1])
+        self.Vis_Name_label.grid(row=1, column=0)
 
-        self.Vis_Name_frame_text = tk.Frame(label)
-        self.Vis_Name_frame_text.pack(side='right', fill='both')
-        self.Vis_Name_label = tk.Label(self.Vis_Name_frame_text, text="Render_Vis", fg = "black", width = 35, height = 1)
-        self.Vis_Name_label.pack(side='right', fill='both')
-        
+        self.R_vis_label = tk.Label(self.str_frame, text="None", fg = "black", width = self.str_size[0], height = self.str_size[1])
+        self.R_vis_label.grid(row=1, column=1)
 
-    def Create_Label(self):
-        self.L_frame_text = tk.Frame(self.frame)
-        self.L_frame_text.pack(side='right', fill='both')
-        self.L_label = []
-        
-        self.R_frame_text = tk.Frame(self.frame)
-        self.R_frame_text.pack(side='right', fill='both')
-        self.R_label = []
+        self.L_vis_label = tk.Label(self.str_frame, text="None", fg = "black", width = self.str_size[0], height = self.str_size[1])
+        self.L_vis_label.grid(row=1, column=2)        
 
-        self.Name_frame_text = tk.Frame(self.frame)
-        self.Name_frame_text.pack(side='right', fill='both')
+
+    def Create_Keypoint_Label(self):
+        self.L_keypoint_label = []
+        self.R_keypoint_label = []
         self.Name_label = []
+
+
+    def Create_Save_Button(self, text = "None", command = None):
+        self.save_button = tk.Button(self.button_frame, text=text, command = command, width=self.button_size[0], height=self.button_size[1])
+        self.save_button.grid(row=0, column=0)
+
+    def Create_Shoes_Toggle_Button(self, text = "None", command = None):
+        self.shoes_toggle_button = tk.Button(self.button_frame, text=text, command = command, width=self.button_size[0], height=self.button_size[1])
+        self.shoes_toggle_button.grid(row=0, column=1)
+        
+    def Create_Shoes_Vis_Toggle_Button(self, text = "None", command = None):
+        self.shoes_vis_toggle_button = tk.Button(self.button_frame, text=text, command = command, width=self.button_size[0], height=self.button_size[1])
+        self.shoes_vis_toggle_button.grid(row=0, column=2)
         
     def Set_Label(self, num_joints, init_value):
         for i in range(num_joints):
-            R_label = tk.Label(self.R_frame_text, text=str(init_value), fg = "red", width = 35, height = 1)
-            R_label.pack()
-            self.R_label.append(R_label)
-            
-            L_label = tk.Label(self.L_frame_text, text=str(init_value), fg = "red", width = 35, height = 1)
-            L_label.pack()
-            self.L_label.append(L_label)
+            Name_label = tk.Label(self.str_frame, text=str(i)+": "+self.idx_name[i], fg = "#000", width = self.str_size[0], height = self.str_size[1])
+            Name_label.grid(row=i+2, column=0)
 
-            Name_label = tk.Label(self.Name_frame_text, text=str(i)+": "+self.idx_name[i], fg = "#000", width = 35, height = 1)
-            Name_label.pack()
+            R_keypoint_label = tk.Label(self.str_frame, text=str(init_value), fg = "red", width = self.str_size[0], height = self.str_size[1])
+            R_keypoint_label.grid(row=i+2, column=1)
+            self.R_keypoint_label.append(R_keypoint_label)
+            
+            L_keypoint_label = tk.Label(self.str_frame, text=str(init_value), fg = "red", width = self.str_size[0], height = self.str_size[1])
+            L_keypoint_label.grid(row=i+2, column=2)
+            self.L_keypoint_label.append(L_keypoint_label)
+
+
             
     def Create_Image(self, img):
+        self.img_orig_width = img.width
+        self.img_orig_height = img.height
+        max_l = max(self.img_orig_width/self.square_canvas_size, self.img_orig_height/self.square_canvas_size)
+        self.scale = 1.0
+        if max_l > 1.0:
+            self.scale = math.ceil(max_l)
+            resize_xy = (int(self.img_orig_width/self.scale), int(self.img_orig_height/self.scale))
+            img = img.resize(resize_xy)
+
+
         self.photo = ImageTk.PhotoImage(img)
-        #self.canvas.config(width = 400, height = 200)
         self.img_width = img.width
         self.img_height = img.height
-        self.canvas.configure(width = self.img_width, height = self.img_height)
-        self.img = self.canvas.create_image(self.img_width/2, 0, image = self.photo, anchor = "n")
+        self.canvas.place(x = (self.square_canvas_center - self.img_width/2.), y = (self.square_canvas_center - self.img_height/2.), width = self.img_width, height = self.img_height)
+        self.canvas.create_image(0, 0, image = self.photo, anchor = 'nw')
 
         self.Create_Num_Text(self.img_width, self.img_height)
 
