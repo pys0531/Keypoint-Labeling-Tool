@@ -1,4 +1,7 @@
 # Keypoint Labelling Tool
+<p align = 'center'>
+    <img src = './assets/Keypoint Label Tool.gif'>
+</p>
   
 ## Run
 
